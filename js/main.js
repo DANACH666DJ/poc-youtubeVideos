@@ -1,3 +1,5 @@
-import { solicitarYT }  from './jstube.js';
+import { sendYT }  from './jstube.js';
 
-solicitarYT("videos")
+sendYT("canales");
+
+sendYT("videos");

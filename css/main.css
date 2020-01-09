@@ -105,6 +105,7 @@ main {
 
 .video__enlace {
     display: inline-block;
+    cursor: pointer;
 }
 
 .video__imagen {

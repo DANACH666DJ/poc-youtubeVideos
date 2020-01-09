@@ -40,12 +40,49 @@ const config = {
 
 // Request info api youtube (channel or video)
 
-export const solicitarYT  = (tipo) => {
-    fetch(config.desarrollo ? `../json/${tipo}.json` : config[tipo].url())
+export const sendYT  = (type) => {
+    fetch(config.desarrollo ? `../json/${type}.json` : config[type].url())
         .then(res => {
             return res.json()
                 .then(json => {
-                    console.log(json)
+                    createElement(json.items, type);
                 });
-        });
+        })
+        .catch(error => console.log(error));
+}
+
+// Create and add channels or videos to the DOM
+
+const createElement = (elements, type) => {
+    console.log(elements, type);
+    elements.forEach(el => {
+        console.log(el);
+        // img element
+        let fontImg = el.snippet.thumbnails.medium.url,
+            img = document.createElement("img");
+        img.src = fontImg;
+        img.classList.add(`${config[type].css}__imagen`);
+        // link
+        let link = document.createElement("a");
+        link.classList.add(`${config[type].css}__enlace`);
+
+        if (type === "videos") {
+            link.title = el.snippet.title;
+            link.href = `https://www.youtube.com/watch?v=${el.id.videoId}`
+        } else if (type === "canales"){
+            link.title = el.snippet.channelTitle;
+            link.href = `https://www.youtube.com/channel/${el.snippet.channelId}`
+        }
+
+        link.target = "_blank";
+        link.appendChild(img);
+        // add to div
+        let item = document.createElement("div");
+        item.classList.add(config[type].css);
+        item.appendChild(link);
+
+        // add it to yout container element
+        config[type].dom.appendChild(item);
+    });
+
 }
