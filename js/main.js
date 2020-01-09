@@ -1,5 +1,4 @@
-import { sendYT }  from './jstube.js';
+import { JSTube }  from './jstube.js';
 
-sendYT("canales");
-
-sendYT("videos");
+// init app with videos and channels
+JSTube();

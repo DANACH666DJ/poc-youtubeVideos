@@ -40,23 +40,46 @@ const config = {
 
 // Request info api youtube (channel or video)
 
-export const sendYT  = (type) => {
-    fetch(config.desarrollo ? `../json/${type}.json` : config[type].url())
+const sendYT  = (type) => {
+    return fetch(config.desarrollo ? `../json/${type}.json` : config[type].url())
         .then(res => {
             return res.json()
                 .then(json => {
-                    createElement(json.items, type);
+                    return {json, type };
                 });
         })
         .catch(error => console.log(error));
 }
 
+// Functionality of the channels and videos searching
+
+const search = (text) => {
+    console.log(text)
+    query.busqueda = text;
+    deleteElements();
+    JSTube();
+}
+
+const deleteElements = () => {
+    let videos = document.querySelectorAll(".video"),
+        canales = document.querySelectorAll(".canal");
+
+    videos.length && videos.forEach(video => video.remove());
+    canales.length && canales.forEach(canal => canal.remove());
+}
+
+document.querySelector(".cabecera__formulario").onsubmit = event => {
+    event.preventDefault();
+    search(document.querySelector(".cabecera__formulario__busqueda").value)
+}
+
+
 // Create and add channels or videos to the DOM
 
 const createElement = (elements, type) => {
-    console.log(elements, type);
+    // console.log(elements, type);
     elements.forEach(el => {
-        console.log(el);
+        // console.log(el);
         // img element
         let fontImg = el.snippet.thumbnails.medium.url,
             img = document.createElement("img");
@@ -84,5 +107,17 @@ const createElement = (elements, type) => {
         // add it to yout container element
         config[type].dom.appendChild(item);
     });
-
 }
+
+// Public piece that unites and starts everything
+export const JSTube = () => {
+    Promise.all([sendYT("canales"), sendYT("videos")])
+        .then(responses => { 
+            responses.forEach(res => {
+                createElement(res.json.items, res.type);
+            });
+        })
+        .catch(error => console.error(error));
+}
+
+
