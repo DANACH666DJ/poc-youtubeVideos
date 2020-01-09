@@ -1,4 +1,4 @@
-// Parámetros del request a la API de YouTube
+// Params of request the Youtube Api
 const query = {
     baseUrl: 'https://www.googleapis.com/youtube/v3/search?',
     part: 'snippet',
@@ -6,14 +6,17 @@ const query = {
     order: {visualizaciones: 'viewCount', relevancia: 'relevance'},
     busqueda: '',
     maxResults: {videos: 20, canales: 34},
-    key: "TU API KEY AQUÍ",
+    key: "AIzaSyBXAv85Wh8aLTayYuYV7ogzgVdimWibdlE",
     // prevPageToken: '',
     // nextPageToken: ''
 };
 
-// Configuración de la App
+// Desestructurar para obtener valores
+const { baseUrl, part, type, order, maxResults, key} = query;
+
+// Config App
 const config = {
-    desarrollo: false,
+    desarrollo: true,
     canales : {
         url: () => {
             return `${baseUrl}part=${part}&type=${type.canales}
@@ -33,3 +36,16 @@ const config = {
         dom: document.querySelector(".videos"),
     },
 };
+
+
+// Request info api youtube (channel or video)
+
+export const solicitarYT  = (tipo) => {
+    fetch(config.desarrollo ? `../json/${tipo}.json` : config[tipo].url())
+        .then(res => {
+            return res.json()
+                .then(json => {
+                    console.log(json)
+                });
+        });
+}
